@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Přihlášení{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-4">
+    <div class="card shadow-sm rounded-4">
+      <div class="card-body p-4">
+        <h3 class="mb-4 text-center">🔐 Přihlášení</h3>
+
+        {% if error %}
+          <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label">Uživatel</label>
+            <input class="form-control" name="username" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Heslo</label>
+            <input class="form-control" type="password" name="password" required>
+          </div>
+
+          <div class="d-grid">
+            <button class="btn btn-primary btn-lg" type="submit">Přihlásit</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

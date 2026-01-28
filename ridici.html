@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Řidiči{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="card shadow-sm rounded-4">
+      <div class="card-body p-4">
+        <h3 class="mb-3">👤 Řidiči</h3>
+
+        <form method="post">
+          <label class="form-label">Jméno řidiče</label>
+          <div class="input-group">
+            <input type="text" name="jmeno" class="form-control" placeholder="Např. Jan Novák" required>
+            <button class="btn btn-primary" type="submit">Přidat</button>
+          </div>
+        </form>
+
+        <p class="text-muted mt-3 mb-0">
+          Tip: používej jednotný formát jmen (např. „J. Novák“ nebo „Jan Novák“).
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card shadow-sm rounded-4">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Jméno</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in ridici %}
+              <tr>
+                <td>{{ r["jmeno"] }}</td>
+              </tr>
+              {% endfor %}
+
+              {% if ridici|length == 0 %}
+              <tr>
+                <td class="text-center text-muted py-4">Zatím nejsou žádní řidiči.</td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

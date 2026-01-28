@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block title %}Přidat jízdu{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7 col-md-9">
+
+    <div class="card shadow-sm rounded-4">
+      <div class="card-body p-4">
+
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h3 class="mb-0">➕ Přidat jízdu</h3>
+          <a class="btn btn-outline-secondary" href="/">Zpět</a>
+        </div>
+
+        <form method="post" id="rideForm">
+
+          <div class="row g-3">
+
+            <div class="col-md-6">
+              <label class="form-label">Datum</label>
+              <input type="date" name="datum" id="datum" class="form-control" required>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Řidič</label>
+              <select name="ridic" id="ridic" class="form-select" required>
+                {% for r in ridici %}
+                  <option value="{{ r['jmeno'] }}">{{ r['jmeno'] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Vozidlo (SPZ)</label>
+              <select name="vozidlo" id="vozidlo" class="form-select" required>
+                {% for a in auta %}
+                  <option value="{{ a['spz'] }}">{{ a['spz'] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Účel jízdy</label>
+              <input type="text" name="ucel" id="ucel" class="form-control" required placeholder="Např. zakázka / servis / schůzka">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">KM start</label>
+              <input type="number" name="km_start" id="km_start" class="form-control" required inputmode="numeric" min="0" step="1">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">KM konec</label>
+              <input type="number" name="km_konec" id="km_konec" class="form-control" required inputmode="numeric" min="0" step="1">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">KM celkem</label>
+              <input type="text" id="km_celkem_view" class="form-control" readonly value="—">
+              <div id="km_help" class="form-text"></div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="1" id="addAnother">
+                <label class="form-check-label" for="addAnother">
+                  Po uložení přidat další jízdu (rychlé zadávání)
+                </label>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <button class="btn btn-primary btn-lg w-100" id="submitBtn" type="submit">
+                💾 Uložit
+              </button>
+            </div>
+
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // 1) Předvyplnit dnešní datum
+  (function setToday() {
+    const el = document.getElementById("datum");
+    if (!el.value) {
+      const d = new Date();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      el.value = `${d.getFullYear()}-${mm}-${dd}`;
+    }
+  })();
+
+  // 2) Výpočet km celkem + validace
+  const kmStart = document.getElementById("km_start");
+  const kmKonec = document.getElementById("km_konec");
+  const kmView = document.getElementById("km_celkem_view");
+  const kmHelp = document.getElementById("km_help");
+  const submitBtn = document.getElementById("submitBtn");
+
+  function updateKm() {
+    const a = parseInt(kmStart.value, 10);
+    const b = parseInt(kmKonec.value, 10);
+
+    kmHelp.textContent = "";
+    kmView.value = "—";
+    submitBtn.disabled = false;
+    kmKonec.classList.remove("is-invalid");
+    kmStart.classList.remove("is-invalid");
+
+    if (Number.isFinite(a) && Number.isFinite(b)) {
+      const diff = b - a;
+      kmView.value = diff;
+
+      if (diff < 0) {
+        kmHelp.textContent = "KM konec nesmí být menší než KM start.";
+        kmHelp.className = "form-text text-danger";
+        kmKonec.classList.add("is-invalid");
+        kmStart.classList.add("is-invalid");
+        submitBtn.disabled = true;
+      } else {
+        kmHelp.textContent = "OK";
+        kmHelp.className = "form-text text-success";
+      }
+    }
+  }
+
+  kmStart.addEventListener("input", updateKm);
+  kmKonec.addEventListener("input", updateKm);
+
+  // 3) Po uložení: pokud je zatrženo "přidat další", zůstaneš na /add
+  document.getElementById("rideForm").addEventListener("submit", function () {
+    const addAnother = document.getElementById("addAnother").checked;
+    if (addAnother) {
+      // Přidáme do URL query flag, ať to server může přesměrovat zpět na /add
+      // (musíme upravit app.py – viz níže)
+      const action = this.getAttribute("action") || "/add";
+      this.setAttribute("action", action + "?next=add");
+    }
+  });
+
+  // 4) Fokus na Účel (rychlejší zadání)
+  window.addEventListener("load", () => {
+    const u = document.getElementById("ucel");
+    if (u) u.focus();
+  });
+</script>
+{% endblock %}

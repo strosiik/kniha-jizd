@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Auta{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="card shadow-sm rounded-4">
+      <div class="card-body p-4">
+        <h3 class="mb-3">🚗 Auta</h3>
+
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label">SPZ</label>
+            <input type="text" name="spz" class="form-control" placeholder="Např. 1AB2345" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Popis</label>
+            <input type="text" name="popis" class="form-control" placeholder="Např. Octavia / Dodávka">
+          </div>
+
+          <button class="btn btn-primary w-100" type="submit">Přidat auto</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card shadow-sm rounded-4">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>SPZ</th>
+                <th>Popis</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for a in auta %}
+              <tr>
+                <td class="fw-semibold">{{ a["spz"] }}</td>
+                <td>{{ a["popis"] }}</td>
+              </tr>
+              {% endfor %}
+
+              {% if auta|length == 0 %}
+              <tr>
+                <td colspan="2" class="text-center text-muted py-4">Zatím nejsou žádná auta.</td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

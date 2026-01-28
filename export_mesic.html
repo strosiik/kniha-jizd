@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Export (měsíc){% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7 col-lg-5">
+    <div class="card shadow-sm rounded-4">
+      <div class="card-body p-4">
+        <h3 class="mb-4 text-center">📊 Export knihy jízd</h3>
+
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label">Vyber měsíc</label>
+            <input type="month" name="mesic" class="form-control" required value="{{ now }}">
+            <div class="form-text">Export vytvoří Excel: záložka pro každou SPZ + součet km.</div>
+          </div>
+
+          <div class="d-grid">
+            <button class="btn btn-primary btn-lg" type="submit">⬇️ Export do Excelu</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

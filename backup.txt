@@ -1,0 +1,1 @@
+copy /Y C:\kniha_jizd\database.db C:\kniha_jizd\backup\database_%date:~-4%-%date:~3,2%-%date:~0,2%.db
